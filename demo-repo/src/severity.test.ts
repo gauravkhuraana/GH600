@@ -1,29 +1,46 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { severity, isReleaseBlocking } from "./severity.js";
+import {
+  severity,
+  isReleaseBlocking,
+  type Impact,
+  type Reach,
+  type Severity,
+} from "./severity.js";
 
-test("blocked for all users is sev 1", () => {
-  assert.equal(severity("blocked", "all-users"), 1);
+type SeverityCase = {
+  impact: Impact;
+  reach: Reach;
+  expectedSeverity: Severity;
+};
+
+// Keep every combination explicit: this table documents policy rather than
+// reproducing the implementation's scoring algorithm in the test.
+const severityCases = [
+  { impact: "cosmetic", reach: "single-user", expectedSeverity: 4 },
+  { impact: "cosmetic", reach: "team", expectedSeverity: 3 },
+  { impact: "cosmetic", reach: "all-users", expectedSeverity: 3 },
+  { impact: "degraded", reach: "single-user", expectedSeverity: 3 },
+  { impact: "degraded", reach: "team", expectedSeverity: 3 },
+  { impact: "degraded", reach: "all-users", expectedSeverity: 2 },
+  { impact: "blocked", reach: "single-user", expectedSeverity: 3 },
+  { impact: "blocked", reach: "team", expectedSeverity: 2 },
+  { impact: "blocked", reach: "all-users", expectedSeverity: 1 },
+] satisfies readonly SeverityCase[];
+
+test("maps every impact and reach combination to its severity", async (t) => {
+  for (const { impact, reach, expectedSeverity } of severityCases) {
+    await t.test(`${impact} / ${reach} is sev ${expectedSeverity}`, () => {
+      assert.equal(severity(impact, reach), expectedSeverity);
+    });
+  }
 });
 
-test("blocked for a team is sev 2", () => {
-  assert.equal(severity("blocked", "team"), 2);
-});
-
-test("cosmetic for a single user is sev 4", () => {
-  assert.equal(severity("cosmetic", "single-user"), 4);
-});
-
-test("degraded for a team is sev 3", () => {
-  assert.equal(severity("degraded", "team"), 3);
-});
-
-test("sev 1 and sev 2 block the release", () => {
-  assert.equal(isReleaseBlocking("blocked", "all-users"), true);
-  assert.equal(isReleaseBlocking("blocked", "team"), true);
-});
-
-test("sev 3 and sev 4 do not block the release", () => {
-  assert.equal(isReleaseBlocking("degraded", "team"), false);
-  assert.equal(isReleaseBlocking("cosmetic", "single-user"), false);
+test("blocks releases only for sev 1 and sev 2 incidents", async (t) => {
+  // Exercise both sides of the sev 2 / sev 3 boundary for the full policy.
+  for (const { impact, reach, expectedSeverity } of severityCases) {
+    await t.test(`${impact} / ${reach}`, () => {
+      assert.equal(isReleaseBlocking(impact, reach), expectedSeverity <= 2);
+    });
+  }
 });
