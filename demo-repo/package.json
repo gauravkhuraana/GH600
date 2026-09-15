@@ -1,0 +1,19 @@
+{
+  "name": "agentic-guardrails-demo",
+  "version": "1.0.0",
+  "description": "A deliberately tiny repository used to demonstrate GitHub governance controls for agent-authored pull requests.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "lint": "tsc --noEmit",
+    "test": "node --test \"dist/**/*.test.js\""
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "typescript": "^5.6.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

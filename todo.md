@@ -1,0 +1,3 @@
+[Developing in Agentic AI Systems Part 1 of 2 - Training | Microsoft Learn](https://learn.microsoft.com/en-us/training/paths/gh-developing-agentic-systems-1) from this page you need to create content for foundations of Agentic AI in github, WE can use images from these pages. the topic i can think of 1) "Agentic system vs simple AI chatbot" 2) Agent lifecycle 3) rest all where we will see how poilcy etc can help in reviwing AI work. Any question ask. MS might be maintaing github page for all the learn documentation you can use that as well
+
+Keep the examples close to testing and automation 

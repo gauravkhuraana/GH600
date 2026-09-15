@@ -1,0 +1,34 @@
+name: Deploy
+
+# There is nothing to deploy. This workflow exists so the camera can show a job
+# sitting and waiting on a named human before it touches a secret.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy to production
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show that the secret is only reachable after approval
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+        run: |
+          if [ -z "$DEPLOY_TOKEN" ]; then
+            echo "No secret available."
+          else
+            echo "Secret is available. Length: ${#DEPLOY_TOKEN}"
+          fi
+
+      - name: Pretend to deploy
+        run: echo "Deployed."

@@ -1,0 +1,5 @@
+# Keep presentation and recording artifacts local.
+*.pptx
+*_ppt_*.md
+*_script_*.md
+*_thumbnail_*
