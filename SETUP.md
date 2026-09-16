@@ -24,7 +24,6 @@ permissions live in the GitHub UI and cannot be committed. Do these in order.
 ## 1. Create the repo
 
 ```bash
-cd demo-repo
 git init -b main
 npm install
 npm run lint && npm run build && npm test   # all three must pass before you push

@@ -45,3 +45,8 @@ The files in this repository are only half of the configuration. Rulesets, envir
 default token permissions are set through the GitHub UI and cannot be committed.
 
 See [SETUP.md](SETUP.md) before recording.
+
+## Related resources
+
+- [GH-600 Agentic AI Developer | gauravkhurana.com](https://gauravkhurana.com/docs/AI/gh-600-agentic-ai/)
+- [5 Differences Between AI Chatbots and Agentic Systems | GH600 - YouTube](https://www.youtube.com/watch?v=aP6BI48Yaac)
