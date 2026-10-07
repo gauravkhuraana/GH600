@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   severity,
   isReleaseBlocking,
+  responseSlaHours,
   type Impact,
   type Reach,
   type Severity,
@@ -41,6 +42,23 @@ test("blocks releases only for sev 1 and sev 2 incidents", async (t) => {
   for (const { impact, reach, expectedSeverity } of severityCases) {
     await t.test(`${impact} / ${reach}`, () => {
       assert.equal(isReleaseBlocking(impact, reach), expectedSeverity <= 2);
+    });
+  }
+});
+
+// Response-time policy from issue #2. One row per severity, written out in
+// full so the test documents the policy rather than re-deriving it.
+const slaCases = [
+  { sev: 1, hours: 1 },
+  { sev: 2, hours: 4 },
+  { sev: 3, hours: 24 },
+  { sev: 4, hours: 72 },
+] satisfies readonly { sev: Severity; hours: number }[];
+
+test("maps every severity to its first-response SLA in hours", async (t) => {
+  for (const { sev, hours } of slaCases) {
+    await t.test(`sev ${sev} must be answered within ${hours}h`, () => {
+      assert.equal(responseSlaHours(sev), hours);
     });
   }
 });
