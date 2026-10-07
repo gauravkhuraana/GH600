@@ -4,11 +4,11 @@
 #
 # Last matching pattern wins, so the catch-all goes first.
 
-# Default owners for everything.
-*                       @gauravkhuraana @udzialmeansshare
+# Default owner for everything.
+*                       @udzialmeansshare
 
 # High-impact paths. A change here can weaken the very checks
 # that are supposed to validate the change.
-/.github/workflows/     @gauravkhuraana @udzialmeansshare
-/.github/CODEOWNERS     @gauravkhuraana @udzialmeansshare
-/infra/                 @gauravkhuraana @udzialmeansshare
+/.github/workflows/     @udzialmeansshare
+/.github/CODEOWNERS     @udzialmeansshare
+/infra/                 @udzialmeansshare
