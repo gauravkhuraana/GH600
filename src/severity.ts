@@ -26,6 +26,18 @@ export function severity(impact: Impact, reach: Reach): Severity {
   return 4;
 }
 
+/** First-response SLA in hours for each severity. Policy from issue #2. */
+const RESPONSE_SLA_HOURS: Record<Severity, number> = {
+  1: 1,
+  2: 4,
+  3: 24,
+  4: 72,
+};
+
+export function responseSlaHours(sev: Severity): number {
+  return RESPONSE_SLA_HOURS[sev];
+}
+
 export function isReleaseBlocking(impact: Impact, reach: Reach): boolean {
   return severity(impact, reach) <= 2;
 }
