@@ -17,7 +17,7 @@ a repository that already has guardrails — and what a reviewer does about it.
 | `.github/workflows/ci.yml` | Least-privilege `GITHUB_TOKEN`, and required status checks |
 | `.github/workflows/deploy.yml` | Environment approval gating a secret |
 | `.github/copilot-instructions.md` | Constrains agent behaviour before it starts |
-| Ruleset on `main` (UI, see `SETUP.md`) | Turns evaluation into an enforceable gate |
+| Ruleset on `main` (configured in the GitHub UI) | Turns evaluation into an enforceable gate |
 
 ## Local commands
 
@@ -25,7 +25,7 @@ a repository that already has guardrails — and what a reviewer does about it.
 npm ci
 npm run lint    # tsc --noEmit
 npm run build   # tsc
-npm test        # node --test dist/
+npm test        # node --test dist/*.test.js
 ```
 
 ## Reviewing a pull request here
@@ -42,9 +42,8 @@ Six checks, and none of them ask who the author was.
 ## Setup
 
 The files in this repository are only half of the configuration. Rulesets, environments and
-default token permissions are set through the GitHub UI and cannot be committed.
-
-See [SETUP.md](SETUP.md) before recording.
+default token permissions are set through the GitHub UI and cannot be committed — which is
+exactly why the file-level controls in `.github/` have to be guarded by a ruleset.
 
 ## Related resources
 

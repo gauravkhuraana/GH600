@@ -6,11 +6,9 @@ dist/
 # Only the demo project belongs in this repository.
 /*
 !/.github/
-!/anti-pattern/
 !/src/
 !/.gitignore
 !/package-lock.json
 !/package.json
 !/README.md
-!/SETUP.md
 !/tsconfig.json

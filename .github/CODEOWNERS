@@ -1,7 +1,8 @@
-# Replace @REPLACE-WITH-YOUR-USERNAME before recording.
 # CODEOWNERS decides WHO gets asked to review.
 # It does not make review mandatory on its own — that needs
-# "Require review from Code Owners" enabled in the ruleset. See SETUP.md.
+# "Require review from Code Owners" enabled in the ruleset.
+#
+# Last matching pattern wins, so the catch-all goes first.
 
 # Default owner for everything.
 *                       @udzialmeansshare

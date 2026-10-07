@@ -1,7 +1,7 @@
 name: Deploy
 
-# There is nothing to deploy. This workflow exists so the camera can show a job
-# sitting and waiting on a named human before it touches a secret.
+# There is nothing to deploy. This workflow exists to show a job sitting and
+# waiting on a named human before it can touch a secret.
 
 on:
   workflow_dispatch:
