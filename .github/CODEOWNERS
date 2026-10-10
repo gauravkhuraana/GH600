@@ -12,3 +12,13 @@
 /.github/workflows/     @udzialmeansshare
 /.github/CODEOWNERS     @udzialmeansshare
 /infra/                 @udzialmeansshare
+
+# Agent configuration. Widening an agent's tools or weakening a hook is a
+# governance change, not a code change.
+/.github/agents/        @udzialmeansshare
+/.github/hooks/         @udzialmeansshare
+
+# Agent configuration. Widening an agent's tools or weakening a hook is a
+# governance change, not a code change.
+/.github/agents/        @udzialmeansshare
+/.github/hooks/         @udzialmeansshare
