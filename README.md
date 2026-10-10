@@ -44,7 +44,6 @@ Six checks, and none of them ask who the author was.
 The files in this repository are only half of the configuration. Rulesets, environments and
 default token permissions are set through the GitHub UI and cannot be committed.
 
-See [SETUP.md](SETUP.md) before recording.
 
 ## Related resources
 

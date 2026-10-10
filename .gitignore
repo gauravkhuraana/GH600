@@ -1,3 +1,7 @@
+# Recording prep material (slides, scripts, guides) - kept out of the repo and hidden in VS Code
+_prep/
+.vscode/
+
 node_modules/
 dist/
 *.log

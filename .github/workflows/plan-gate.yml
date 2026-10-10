@@ -1,0 +1,39 @@
+name: Plan Gate
+
+# Fails a pull request whose description is missing the plan headings from
+# .github/pull_request_template.md.
+#
+# Two things make this a gate rather than advice:
+#   1. It reads the PULL REQUEST (the event payload), not a file in the repo.
+#   2. "Plan Gate" is added as a required status check in the ruleset on main.
+#
+# It proves the sections are present, not that they are good. A human still reads the plan.
+
+on:
+  pull_request:
+    branches: [main]
+    # "edited" re-runs the gate when someone changes the description.
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  plan-gate:
+    name: Plan Gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Plan, Scope and Success criteria are present
+        env:
+          # A PR body is untrusted text. Pass it through env and use "$BODY";
+          # never interpolate ${{ github.event.pull_request.body }} inside run.
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          missing=0
+          for heading in "## Plan" "## Scope" "## Success criteria"; do
+            if ! grep -qF -- "$heading" <<< "$BODY"; then
+              echo "::error::Missing section in the PR description: $heading"
+              missing=1
+            fi
+          done
+          exit "$missing"

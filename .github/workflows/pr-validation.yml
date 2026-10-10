@@ -1,0 +1,56 @@
+name: PR Validation
+
+# Demonstrates three workflow mechanics from module 2:
+#   - a job OUTPUT handed to a later job through needs
+#   - CONTEXTS: github.* for event data, env for untrusted text
+#   - DEFENSIVE GATING: the PR-only job skips on a manual run
+#
+# Report-only. It warns about changed files that are not listed under "## Scope";
+# it never fails the pull request.
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch: # manual runs are allowed; the PR-only job below guards itself
+
+permissions:
+  contents: read
+
+jobs:
+  scope:
+    name: Read declared scope
+    runs-on: ubuntu-latest
+    outputs:
+      files: ${{ steps.read.outputs.files }}
+    steps:
+      - id: read
+        env:
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          # Lines under "## Scope" up to the next heading, minus HTML comments and blanks,
+          # joined onto one line so the output cannot inject extra keys.
+          files=$(awk '/^## Scope/{f=1; next} /^## /{f=0} f' <<< "$BODY" \
+            | grep -v '^[[:space:]]*<!--' | grep -v '^[[:space:]]*$' | tr '\r\n' '  ')
+          echo "files=${files:-none declared}" >> "$GITHUB_OUTPUT"
+
+  report:
+    name: Scope vs files changed
+    needs: scope
+    # Defensive gating: this job needs a pull request to compare against.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Warn on files changed outside the declared scope
+        env:
+          DECLARED: ${{ needs.scope.outputs.files }}
+          BASE: ${{ github.base_ref }}
+        run: |
+          echo "**Declared scope:** $DECLARED" >> "$GITHUB_STEP_SUMMARY"
+          git diff --name-only "origin/$BASE...HEAD" | while read -r f; do
+            if [[ " $DECLARED " != *"$f"* ]]; then
+              echo "::warning file=$f::Changed, but not listed under Scope in the PR description"
+            fi
+          done

@@ -4,8 +4,7 @@ Committed files are only half the configuration. Rulesets, environments and defa
 permissions live in the GitHub UI and cannot be committed. Do these in order.
 
 > **Currency warning.** Every UI path below was correct for the concepts as described in the
-> Microsoft Learn module, but GitHub's settings pages move. Confirm each path in the UI before
-> recording rather than narrating from this file.
+> Microsoft Learn module, but GitHub's settings pages move.
 
 ---
 

@@ -1,13 +1,17 @@
-# Replace @REPLACE-WITH-YOUR-USERNAME before recording.
 # CODEOWNERS decides WHO gets asked to review.
 # It does not make review mandatory on its own — that needs
 # "Require review from Code Owners" enabled in the ruleset. See SETUP.md.
 
 # Default owner for everything.
-*                       @REPLACE-WITH-YOUR-USERNAME
+*                       @gauravkhuraana
 
 # High-impact paths. A change here can weaken the very checks
 # that are supposed to validate the change.
-/.github/workflows/     @REPLACE-WITH-YOUR-USERNAME
-/.github/CODEOWNERS     @REPLACE-WITH-YOUR-USERNAME
-/infra/                 @REPLACE-WITH-YOUR-USERNAME
+/.github/workflows/     @gauravkhuraana
+/.github/CODEOWNERS     @gauravkhuraana
+/infra/                 @gauravkhuraana
+
+# Agent configuration. Widening an agent's tools or weakening a hook is a
+# governance change, not a code change.
+/.github/agents/        @gauravkhuraana
+/.github/hooks/         @gauravkhuraana
