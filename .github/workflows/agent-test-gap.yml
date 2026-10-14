@@ -1,0 +1,74 @@
+name: Agent test-gap report
+on:
+  workflow_dispatch:
+    inputs:
+      force_fail:
+        description: "Demo only: use a broken token"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm }
+      - run: npm ci && npm run build
+      - run: npm install -g @github/copilot
+
+      - name: Agent — find untested branches (bounded retry)
+        id: agent
+        env:
+          COPILOT_GITHUB_TOKEN: ${{ inputs.force_fail && 'broken-on-purpose' || secrets.COPILOT_GITHUB_TOKEN }}
+        run: |
+          for attempt in 1 2 3; do
+            echo "Attempt $attempt"
+            if copilot -p "Read src/severity.ts and src/severity.test.ts. List every branch with no test as a markdown table: input, expected band, why it matters. Do not edit files." \
+                 --agent planner --no-ask-user -s --share=transcript.md > report.md; then
+              cat report.md >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            sleep $((attempt * 10))
+          done
+          echo "Agent failed after 3 attempts" >> "$GITHUB_STEP_SUMMARY"
+          exit 1
+
+      - name: Fallback — plain test output
+        if: failure() && steps.agent.outcome == 'failure'
+        run: |
+          echo "## Fallback: npm test output" >> "$GITHUB_STEP_SUMMARY"
+          npm test 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" || true
+
+      - name: Keep the evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-run-${{ github.run_id }}
+          path: |
+            report.md
+            transcript.md
+          if-no-files-found: ignore
+
+  escalate:
+    needs: report
+    if: failure()
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write              # only this job writes, and only issues
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh issue create --repo "$GITHUB_REPOSITORY" \
+            --title "Agent test-gap report failed (run ${{ github.run_id }})" \
+            --label agent-escalation \
+            --body "**What failed:** agent step, 3 attempts
+          **What was tried:** retry with backoff, then fallback to plain npm test
+          **Evidence:** $RUN_URL (artifact agent-run-${{ github.run_id }})
+          **Next step:** check COPILOT_GITHUB_TOKEN and the Copilot CLI policy, then re-run"
