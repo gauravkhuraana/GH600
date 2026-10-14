@@ -6,6 +6,7 @@ dist/
 # Only the demo project belongs in this repository.
 /*
 !/.github/
+!/docs/
 !/src/
 !/.gitignore
 !/package-lock.json
